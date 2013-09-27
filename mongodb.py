@@ -154,20 +154,26 @@ class MongoDB(object):
         for node in obj.children:
             if node.key == "Port":
                 self.mongo_port = int(node.values[0])
+                collectd.info("mongodb plugin: Port " + self.mongo_port)
             elif node.key == "Host":
                 self.mongo_host = node.values[0]
+                collectd.info("mongodb plugin: Host " + self.Host)
             elif node.key == "User":
                 self.mongo_user = node.values[0]
             elif node.key == "Password":
                 self.mongo_password = node.values[0]
             elif node.key == "Databases":
                 self.mongo_dbs = node.values
+                collectd.info("mongodb plugin: Databases " + self.mongo_dbs)
             elif node.key == "ConnectionPoolStatus":
                 self.includeConnPoolMetrics = node.values
+                collectd.info("mongodb plugin: ConnectionPoolStatus " + self.ConnectionPoolStatus)
             elif node.key == "ServerStats":
                 self.includeServerStatsMetrics = node.values
+                collectd.info("mongodb plugin: ServerStats " + self.ServerStats)
             elif node.key == "DBStats":
                 self.includeDbstatsMetrics = node.values
+                collectd.info("mongodb plugin: DBStats " + self.DBStats)
             else:
                 collectd.warning("mongodb plugin: Unkown configuration key %s" % node.key)
 
@@ -176,7 +182,7 @@ class MongoDB(object):
         # actually a recursive submit call to dive deeper into nested dict data
         # since the leaf value in the nested dicts is the type, we check on the type type :-)
         if db:
-            plugin_instance = "%s-%d" % (self.mongo_port, db)
+            plugin_instance = "%s-%s" % (self.mongo_port, db)
         else:
             plugin_instance = str(self.mongo_port)
         v = collectd.Values()
@@ -198,7 +204,7 @@ class MongoDB(object):
                 else:
                     next_instance_name = type_name
                 if data_tree.has_key(type_name):
-                    self.recursive_submit(type_value, data_tree[type_name], next_instance_name)
+                    self.recursive_submit(type_value, data_tree[type_name], next_instance_name, db=db)
                 else:
                     # may want to log this but some mongodb setups may not have anything to report
                     pass
