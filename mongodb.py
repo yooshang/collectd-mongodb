@@ -162,18 +162,18 @@ class MongoDB(object):
                 self.mongo_user = node.values[0]
             elif node.key == "Password":
                 self.mongo_password = node.values[0]
-            elif node.key == "Databases":
+            elif node.key in ("Databases", "Database"):
                 self.mongo_dbs = node.values
-                collectd.info("mongodb plugin: Databases " + self.mongo_dbs)
+                collectd.info("mongodb plugin: Databases " + ', '.join(self.mongo_dbs))
             elif node.key == "ConnectionPoolStatus":
                 self.includeConnPoolMetrics = node.values
                 collectd.info("mongodb plugin: ConnectionPoolStatus " + self.ConnectionPoolStatus)
             elif node.key == "ServerStats":
                 self.includeServerStatsMetrics = node.values
-                collectd.info("mongodb plugin: ServerStats " + self.ServerStats)
+                collectd.info("mongodb plugin: ServerStats " + ', '.join(self.ServerStats))
             elif node.key == "DBStats":
                 self.includeDbstatsMetrics = node.values
-                collectd.info("mongodb plugin: DBStats " + self.DBStats)
+                collectd.info("mongodb plugin: DBStats " + ', '.join(self.DBStats))
             else:
                 collectd.warning("mongodb plugin: Unkown configuration key %s" % node.key)
 
